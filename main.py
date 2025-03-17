@@ -15,15 +15,14 @@ end_time = time.time()
 print(f"Loading CSV files: {end_time - start_time:.4f} seconds")
 print(f"Memory usage after loading CSV files: {memory_used():.2f} MB")
 
-
 start_time = time.time()
-merged_df = pd.merge(df1, df2, left_on='song', right_on='name', how='inner')
+merged_df = pd.merge(df1, df2, left_on=['song', 'artist'], right_on=['name', 'artists'], how='inner')
 end_time = time.time()
 print(f"Merging CSV files: {end_time - start_time:.4f} seconds")
 print(f"Memory usage after merging CSV files: {memory_used():.2f} MB")
 
 start_time = time.time()
-merged_df.drop(columns=['name'], inplace=True)
+merged_df.drop(columns=['name', 'artists'], inplace=True)
 end_time = time.time()
 print(f"Dropping track_name column: {end_time - start_time:.4f} seconds")
 print(f"Memory usage after dropping column: {memory_used():.2f} MB")
@@ -44,7 +43,7 @@ start_time = time.time()
 spotify_columns = [
     'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness',
     'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo',
-    'time_signature'
+    'time_signature', 'duration_ms'
 ]
 
 most_common_entries = {}
@@ -55,11 +54,13 @@ end_time = time.time()
 print(f"Finding most common entries: {end_time - start_time:.4f} seconds")
 print(f"Memory usage after finding most common entries: {memory_used():.2f} MB")
 
-
 total_end_time = time.time()
 total_time = total_end_time - total_start_time
 print(f"\nTotal execution time: {total_time:.4f} seconds")
 
 print("\nMost Common Entries:")
 for column, value in most_common_entries.items():
-    print(f"{column}: {value}")
+    if column != "duration_ms":
+        print(f"{column}: {value}")
+    else:
+        print(f"Duration in minutes: {value / 60000:.4f}")
